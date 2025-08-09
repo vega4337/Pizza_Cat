@@ -7,9 +7,9 @@
 <title>🍕🐱 Pizza Cat — Drop Edition</title>
 <style>
   :root{
-    --bg:#fff7ee; --panel:#ffe3c4; --ink:#5b4636; --accent:#ff9f43; --accent2:#ff6b6b;
+    --bg:#fff7ee; --panel:#ffe3c4; --ink:#4c3a2c; --accent:#ff9f43; --accent2:#ff6b6b;
     --ok:#2ecc71; --bad:#e74c3c; --shadow:rgba(0,0,0,.12);
-    --dough:#f6d3a8; --crust:#e0a76b; --board:#fbe3c9;
+    --dough:#f6d3a8; --crust:#e0a76b; --board:#fbe3c9; --wood1:#f6d6a8; --wood2:#e9c38f;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -18,7 +18,7 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     display:flex; align-items:center; justify-content:center; padding:14px; -webkit-user-select:none; user-select:none;
   }
-  .wrap{width:min(840px,100%)}
+  .wrap{width:min(880px,100%)}
   header{
     background:var(--panel); border-radius:14px; padding:10px 12px; box-shadow:0 6px 18px var(--shadow);
     display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
@@ -33,37 +33,52 @@
   .secondary{background:#fff; color:var(--accent); border:2px solid var(--accent)}
   .mute{min-width:44px}
 
-  main{display:grid; grid-template-columns: 1.2fr .8fr; gap:12px; margin-top:12px}
-  @media(max-width:760px){main{grid-template-columns:1fr}}
-  .stage{background:var(--board); border-radius:16px; padding:10px; box-shadow:0 12px 28px var(--shadow); position:relative; overflow:hidden}
+  main{display:grid; grid-template-columns: 1.25fr .75fr; gap:12px; margin-top:12px}
+  @media(max-width:780px){main{grid-template-columns:1fr}}
+  .stage{
+    background:var(--board); border-radius:16px; padding:12px; box-shadow:0 12px 28px var(--shadow); position:relative; overflow:hidden
+  }
   .right{display:flex; flex-direction:column; gap:10px}
   .panel{background:#fff; border-radius:14px; padding:12px; box-shadow:0 8px 22px var(--shadow)}
 
-  /* SVG cat box */
-  .catbox{position:relative; height:180px; background:#fff; border-radius:14px; box-shadow:0 8px 22px var(--shadow); display:flex; align-items:center; justify-content:center}
+  /* CAT */
+  .catbox{
+    position:relative; height:240px;  /* taller for more drop distance */
+    background:#fff; border-radius:14px; box-shadow:0 8px 22px var(--shadow);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
   svg{max-width:100%; height:100%}
-  .paw{transform-origin: center; animation: pawIdle 1.2s ease-in-out infinite}
-  .paw.drop{animation: pawDrop .5s ease-in-out 1}
+  .paw{transform-origin:center; animation:pawIdle 1.4s ease-in-out infinite}
+  .paw.drop{animation:pawDrop .5s ease-in-out 1}
   @keyframes pawIdle{0%,100%{transform:rotate(0)}50%{transform:rotate(2deg)}}
-  @keyframes pawDrop{0%{transform:translateY(0)}60%{transform:translateY(12px)}100%{transform:translateY(0)}}
+  @keyframes pawDrop{0%{transform:translateY(0)}60%{transform:translateY(14px)}100%{transform:translateY(0)}}
 
   /* falling item */
   .fall{
     position:absolute; left:50%; transform:translateX(-50%);
-    font-size:40px; filter: drop-shadow(0 2px 1px rgba(0,0,0,.15));
+    font-size:44px; filter: drop-shadow(0 2px 1px rgba(0,0,0,.15));
     pointer-events:none;
   }
 
-  /* pizza */
-  .pizza-zone{position:relative; margin:8px auto; width:min(85vmin,560px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center}
-  .pizza{
-    width:90%; height:90%; border-radius:50%;
-    background: radial-gradient(circle at 50% 45%, var(--dough) 0 58%, var(--crust) 60% 100%);
-    box-shadow: inset 0 12px 24px rgba(0,0,0,.08), 0 8px 20px var(--shadow);
-    position:relative; overflow:hidden;
+  /* TABLE + PIZZA */
+  .table{
+    position:relative; margin:22px auto 8px auto; width:min(92vmin,640px);
+    aspect-ratio: 5/3; border-radius:18px;
+    background:linear-gradient(145deg,var(--wood1),var(--wood2));
+    box-shadow: inset 0 8px 18px rgba(0,0,0,.08), 0 10px 26px var(--shadow);
+    display:flex; align-items:flex-start; justify-content:center; padding-top:28px;   /* pushes pizza lower on table */
   }
+  .pizza-zone{position:relative; width:min(80vmin,560px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center}
+  .pizza{
+    width:86%; height:86%; border-radius:50%;
+    background: radial-gradient(circle at 50% 45%, var(--dough) 0 58%, var(--crust) 60% 100%);
+    box-shadow: inset 0 12px 24px rgba(0,0,0,.08), 0 12px 22px rgba(0,0,0,.18);
+    position:relative; overflow:hidden; transform: perspective(900px) rotateX(12deg);  /* subtle “lay flat” look */
+  }
+  .table-shadow{position:absolute; bottom:14px; width:62%; height:12%; left:50%; transform:translateX(-50%); background:radial-gradient(ellipse at center, rgba(0,0,0,.22), transparent 65%); filter:blur(10px); opacity:.35; pointer-events:none}
+
   .spot{position:absolute; font-size: clamp(22px,4.5vmin,36px); transform: translate(-50%,-50%); filter: drop-shadow(0 2px 1px rgba(0,0,0,.15))}
-  .ring{position:absolute; inset:0; border-radius:50%; border:3px dashed rgba(0,0,0,.08); pointer-events:none}
+  .ring{position:absolute; inset:0; border-radius:50%; border:3px dashed rgba(0,0,0,.07); pointer-events:none}
 
   /* order ticket & bubble */
   .order h3{margin:0 0 6px; font-size:16px}
@@ -101,41 +116,52 @@
 
     <main>
       <section class="stage">
-        <!-- Calico Cat SVG -->
+        <!-- Calico Cat SVG (more catlike) -->
         <div class="catbox">
-          <svg viewBox="0 0 300 180" aria-label="Calico cat chef">
+          <svg viewBox="0 0 360 240" aria-label="Calico cat chef">
+            <!-- tail -->
+            <path d="M270 170 q40 10 40 32 q0 18 -20 12 q-10 -4 -18 -10" fill="#6b4b39" opacity=".9"/>
             <!-- body -->
-            <ellipse cx="150" cy="110" rx="85" ry="55" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
-            <!-- patches -->
-            <ellipse cx="110" cy="110" rx="28" ry="18" fill="#6b4b39" opacity=".9"/>
-            <ellipse cx="190" cy="100" rx="22" ry="14" fill="#ffb86b" opacity=".95"/>
+            <ellipse cx="190" cy="160" rx="100" ry="60" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
+            <!-- body patches -->
+            <ellipse cx="140" cy="160" rx="36" ry="22" fill="#6b4b39" opacity=".9"/>
+            <ellipse cx="230" cy="148" rx="28" ry="18" fill="#ffb86b" opacity=".95"/>
             <!-- head -->
-            <circle cx="150" cy="70" r="45" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
+            <circle cx="180" cy="95" r="52" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
             <!-- head patches -->
-            <path d="M140 30 q-25 18 -22 40 q18-6 30-25z" fill="#6b4b39" opacity=".9"/>
-            <path d="M165 35 q25 18 20 40 q-16-7 -25-25z" fill="#ffb86b" opacity=".95"/>
+            <path d="M160 58 q-35 20 -30 50 q20-6 33-26z" fill="#6b4b39" opacity=".9"/>
+            <path d="M196 60 q34 18 28 48 q-18-6 -26-24z" fill="#ffb86b" opacity=".95"/>
             <!-- ears -->
-            <path d="M110 55 l-18 -18 l10 -6 z" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
-            <path d="M190 55 l18 -18 l-10 -6 z" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
+            <path d="M135 86 l-26 -22 l14 -10 l26 22 z" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
+            <path d="M225 86 l26 -22 l-14 -10 l-26 22 z" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
             <!-- face -->
-            <circle cx="135" cy="70" r="4" fill="#333"/>
-            <circle cx="165" cy="70" r="4" fill="#333"/>
-            <path d="M140 83 q10 10 20 0" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="162" cy="96" r="5" fill="#333"/>
+            <circle cx="198" cy="96" r="5" fill="#333"/>
+            <circle cx="180" cy="108" r="3.6" fill="#e38b6b"/>
+            <path d="M170 118 q10 10 20 0" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- whiskers -->
+            <path d="M148 108 h-22" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <path d="M212 108 h22" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <path d="M150 114 h-24" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <path d="M210 114 h24" stroke="#333" stroke-width="2" stroke-linecap="round"/>
             <!-- hat -->
-            <rect x="128" y="27" width="44" height="14" rx="4" fill="#fff" stroke="#ddd"/>
-            <ellipse cx="150" cy="18" rx="32" ry="14" fill="#fff" stroke="#ddd"/>
+            <rect x="156" y="55" width="48" height="16" rx="4" fill="#fff" stroke="#ddd"/>
+            <ellipse cx="180" cy="42" rx="36" ry="16" fill="#fff" stroke="#ddd"/>
             <!-- paws -->
-            <g class="paw" id="pawL"><ellipse cx="118" cy="136" rx="16" ry="10" fill="#ffe7cc" stroke="#d7ae87"/></g>
-            <g class="paw" id="pawR"><ellipse cx="182" cy="136" rx="16" ry="10" fill="#ffe7cc" stroke="#d7ae87"/></g>
+            <g class="paw" id="pawL"><ellipse cx="145" cy="190" rx="18" ry="12" fill="#ffe7cc" stroke="#d7ae87"/></g>
+            <g class="paw" id="pawR"><ellipse cx="215" cy="190" rx="18" ry="12" fill="#ffe7cc" stroke="#d7ae87"/></g>
           </svg>
         </div>
 
         <!-- falling item -->
-        <div id="fall" class="fall" style="top:150px; display:none;">🍅</div>
+        <div id="fall" class="fall" style="top:170px; display:none;">🍅</div>
 
-        <!-- pizza -->
-        <div class="pizza-zone" id="zone">
-          <div class="pizza" id="pizza"><div class="ring"></div></div>
+        <!-- TABLE with pizza on top -->
+        <div class="table">
+          <div class="table-shadow"></div>
+          <div class="pizza-zone" id="zone">
+            <div class="pizza" id="pizza"><div class="ring"></div></div>
+          </div>
         </div>
       </section>
 
@@ -270,7 +296,8 @@
     const pickNeeded = Math.random()<0.7 && needed.length>0;
     const ing = (pickNeeded?needed:ING)[rint(0,(pickNeeded?needed:ING).length-1)];
 
-    current={ing, y:150, speed: 1.6 + level*0.25};
+    // start a bit higher now that catbox is taller (longer trajectory)
+    current={ing, y:160, speed: 1.3 + level*0.22};
     ui.fall.textContent=ing.emo; ui.fall.style.top=current.y+'px'; ui.fall.style.display='block';
     animate();
   }
@@ -284,10 +311,9 @@
     current.y += current.speed;
     ui.fall.style.top=current.y+'px';
 
-    // Reached bottom?
-    const stageRect = document.querySelector('.stage').getBoundingClientRect();
-    if(current.y > stageRect.bottom - 40){
-      // Missed catch
+    // reached table bottom?
+    const tableRect = document.querySelector('.table').getBoundingClientRect();
+    if(current.y > tableRect.bottom - 40){
       handleMiss();
       return;
     }
@@ -302,24 +328,20 @@
     if(!running||!current) return;
     const needed = recipe.some(r=>r.id===current.ing.id) && !done.has(current.ing.id);
     if(needed){
-      // success
       placeOnPizza(current.ing.emo);
       done.add(current.ing.id); renderRecipe();
       score += 120 + Math.floor(timeLeft*2); ui.score.textContent=score;
       setMsg(`Nice! Caught ${current.ing.name}.`,'ok'); beep(760,90,'sine',0.08);
       nextOrWin();
     }else{
-      // wrong catch
       timeLeft = Math.max(0, timeLeft-3); ui.time.textContent=timeLeft;
       setMsg(`We don’t need ${current.ing.name}! -3s`,'bad'); beep(220,150,'sawtooth',0.06);
     }
-    // remove current fall and spawn again after a beat
     ui.fall.style.display='none'; current=null; spawnLock=false;
     if(running) setTimeout(spawnNext, 350);
   }
 
   function handleMiss(){
-    // If it was required and not caught -> penalty
     const wasNeeded = recipe.some(r=>r.id===current.ing.id) && !done.has(current.ing.id);
     if(wasNeeded){
       timeLeft = Math.max(0, timeLeft-4); ui.time.textContent=timeLeft;
@@ -378,7 +400,7 @@
   ui.btnSound.addEventListener('click', ()=>{ soundOn=!soundOn; ui.btnSound.textContent=soundOn?'🔊':'🔇'; });
 
   // Initial overlay
-  showOverlay('Pizza Cat — Drop Edition','Catch toppings by tapping the pizza. Only catch what the order ticket shows!', ['Drag-free','Timer','Levels','Best Score'], 'Play','How to Play', ()=>startLevel(), howTo);
+  showOverlay('Pizza Cat — Drop Edition','Catch toppings by tapping the pizza. Only catch what the order ticket shows!', ['Longer Drop','Table View','Levels','Best Score'], 'Play','How to Play', ()=>startLevel(), howTo);
 })();
 </script>
 </body>

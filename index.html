@@ -12,69 +12,70 @@
     --dough:#f6d3a8; --crust:#e0a76b; --board:#fbe3c9; --wood1:#f6d6a8; --wood2:#e9c38f;
   }
   *{box-sizing:border-box}
-  html,body{height:100%; max-width:100%; overflow-x:hidden;}
+  html,body{height:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink)}
   body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     display:flex; align-items:center; justify-content:center; padding:14px; -webkit-user-select:none; user-select:none;
   }
-  .wrap{width:min(900px,100%); margin:0 auto;}
+  .wrap{width:min(920px,100%); margin:0 auto;}
   header{
     background:var(--panel); border-radius:14px; padding:10px 12px; box-shadow:0 6px 18px var(--shadow);
     display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
   }
-  .title{font-weight:900; font-size:19px}
+  .title{font-weight:900;font-size:19px}
   .badges{display:flex; gap:8px; flex-wrap:wrap}
-  .badge{background:#fff; border-radius:10px; padding:6px 10px; min-width:86px; text-align:center; box-shadow:0 4px 12px var(--shadow)}
-  .badge .l{font-size:11px; opacity:.7} .badge .v{font-weight:900; font-size:18px}
-  .controls{display:flex; gap:8px}
-  button{appearance:none; border:0; border-radius:10px; padding:10px 12px; font-weight:800; cursor:pointer; box-shadow:0 6px 18px var(--shadow)}
-  .primary{background:var(--accent); color:#fff}
-  .secondary{background:#fff; color:var(--accent); border:2px solid var(--accent)}
+  .badge{background:#fff;border-radius:10px;padding:6px 10px;min-width:92px;text-align:center;box-shadow:0 4px 12px var(--shadow)}
+  .badge .l{font-size:11px;opacity:.7}.badge .v{font-weight:900;font-size:18px}
+  .controls{display:flex;gap:8px}
+  button{appearance:none;border:0;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px var(--shadow)}
+  .primary{background:var(--accent);color:#fff}
+  .secondary{background:#fff;color:var(--accent);border:2px solid var(--accent)}
   .mute{min-width:44px}
 
-  main{display:grid; grid-template-columns:1.25fr .75fr; gap:12px; margin-top:12px}
+  main{display:grid;grid-template-columns:1.25fr .75fr;gap:12px;margin-top:12px}
   @media(max-width:980px){main{grid-template-columns:1fr}}
-  .stage{background:var(--board); border-radius:16px; padding:12px; box-shadow:0 12px 28px var(--shadow); position:relative; overflow:hidden}
-  .right{display:flex; flex-direction:column; gap:10px}
-  .panel{background:#fff; border-radius:14px; padding:12px; box-shadow:0 8px 22px var(--shadow)}
-  .order h3{margin:0 0 6px; font-size:16px}
-  .reqs{display:flex; gap:8px; flex-wrap:wrap}
-  .req{background:var(--panel); border-radius:10px; padding:6px 8px; display:flex; align-items:center; gap:6px; font-weight:800}
-  .req.done{opacity:.4; text-decoration:line-through}
-  .bubble{border:2px dashed var(--accent); border-radius:14px; padding:10px 12px}
-  .ok{border-color:var(--ok)!important} .bad{border-color:var(--bad)!important}
+  .stage{background:var(--board);border-radius:16px;padding:12px;box-shadow:0 12px 28px var(--shadow);position:relative;overflow:hidden}
+  .right{display:flex;flex-direction:column;gap:10px}
+  .panel{background:#fff;border-radius:14px;padding:12px;box-shadow:0 8px 22px var(--shadow)}
+  .order h3{margin:0 0 6px;font-size:16px}
+  .reqs{display:flex;gap:8px;flex-wrap:wrap}
+  .req{background:var(--panel);border-radius:10px;padding:6px 8px;display:flex;align-items:center;gap:6px;font-weight:800}
+  .req.done{opacity:.4;text-decoration:line-through}
+  .bubble{border:2px dashed var(--accent);border-radius:14px;padding:10px 12px;min-height:54px}
+  .ok{border-color:var(--ok)!important}.bad{border-color:var(--bad)!important}
 
-  /* Calico cat box — tall for long drop */
+  /* Cat box – tall for long drop */
   .catbox{
-    position:relative; height:300px;
-    background:#fff; border-radius:14px; box-shadow:0 8px 22px var(--shadow);
-    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    position:relative;height:300px;background:#fff;border-radius:14px;box-shadow:0 8px 22px var(--shadow);
+    display:flex;align-items:center;justify-content:center;overflow:hidden
   }
-  svg{max-width:100%; height:100%}
-  .paw{transform-origin:center; animation:pawIdle 1.6s ease-in-out infinite}
+  svg{max-width:100%;height:100%}
+  .paw{transform-origin:center;animation:pawIdle 1.6s ease-in-out infinite}
   .paw.drop{animation:pawDrop .55s ease-in-out 1}
   @keyframes pawIdle{0%,100%{transform:rotate(0)}50%{transform:rotate(2deg)}}
   @keyframes pawDrop{0%{transform:translateY(0)}60%{transform:translateY(16px)}100%{transform:translateY(0)}}
+  /* blink */
+  .eye{transform-origin:center}
+  .blink{animation:blink 4.5s infinite}
+  @keyframes blink{0%,4%,100%{transform:scaleY(1)}2%{transform:scaleY(.1)}}
 
   /* Falling item */
   .fall{
     position:absolute; left:50%; transform:translateX(-50%);
     font-size:48px; filter: drop-shadow(0 2px 1px rgba(0,0,0,.15));
-    pointer-events:none; transition: transform .08s ease; /* squash on catch */
+    pointer-events:none; transition: transform .08s ease;
   }
   .fall.squash{transform:translateX(-50%) scale(1.05,.92)}
 
-  /* Table + pizza lower for longer trajectory */
+  /* Table + pizza for long trajectory */
   .table{
     position:relative; margin:26px auto 8px; width:min(96vmin,720px);
     aspect-ratio: 5/3; border-radius:18px;
     background:linear-gradient(145deg,var(--wood1),var(--wood2));
     box-shadow: inset 0 8px 18px rgba(0,0,0,.08), 0 10px 26px var(--shadow);
-    display:flex; align-items:flex-start; justify-content:center; padding-top:46px;
-    max-width:100%;
+    display:flex; align-items:flex-start; justify-content:center; padding-top:46px; max-width:100%;
   }
-  .pizza-zone{position:relative; width:min(86vmin,620px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; max-width:100%}
+  .pizza-zone{position:relative;width:min(86vmin,620px);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;max-width:100%}
   .pizza{
     width:84%; height:84%; border-radius:50%;
     background: radial-gradient(circle at 50% 45%, var(--dough) 0 58%, var(--crust) 60% 100%);
@@ -85,6 +86,12 @@
   .ring{position:absolute; inset:0; border-radius:50%; border:3px dashed rgba(0,0,0,.07); pointer-events:none}
   .spot{position:absolute; font-size:clamp(22px,4.5vmin,38px); transform:translate(-50%,-50%); filter:drop-shadow(0 2px 1px rgba(0,0,0,.15))}
 
+  /* Combo badge */
+  .combo{
+    position:absolute; top:6px; right:10px; background:#fff; border:2px solid var(--accent);
+    border-radius:999px; padding:6px 10px; font-weight:900; display:none;
+  }
+
   /* Overlay */
   .overlay{position:fixed; inset:0; background:rgba(255,247,238,.96); display:none; align-items:center; justify-content:center; padding:18px; z-index:50}
   .overlay.show{display:flex}
@@ -92,6 +99,7 @@
   .card h2{margin:0 0 6px}
   .grid{display:flex; gap:6px; flex-wrap:wrap; justify-content:center}
   .pill{background:var(--panel); border-radius:999px; padding:6px 10px; font-weight:800}
+  .ghost{opacity:.4}
 </style>
 </head>
 <body>
@@ -113,7 +121,7 @@
 
     <main>
       <section class="stage">
-        <!-- Realistic calico SVG -->
+        <!-- Calico cat SVG (with blink) -->
         <div class="catbox">
           <svg viewBox="0 0 420 300" aria-label="Calico cat chef">
             <!-- tail -->
@@ -124,7 +132,6 @@
                      fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
             <ellipse cx="170" cy="215" rx="44" ry="28" fill="#6b4b39" opacity=".9"/>
             <ellipse cx="270" cy="200" rx="34" ry="22" fill="#ffb86b" opacity=".95"/>
-            <!-- belly shade -->
             <ellipse cx="230" cy="232" rx="92" ry="40" fill="rgba(0,0,0,.05)"/>
             <!-- head -->
             <defs>
@@ -141,8 +148,8 @@
             <path d="M168 126 l-34 -28 l18 -12 l36 30 z" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
             <path d="M262 126 l34 -28 l-18 -12 l-36 30 z" fill="#ffe7cc" stroke="#d7ae87" stroke-width="3"/>
             <!-- face -->
-            <circle cx="195" cy="142" r="6" fill="#2b241f"/>
-            <circle cx="235" cy="142" r="6" fill="#2b241f"/>
+            <ellipse class="eye blink" cx="195" cy="142" rx="6" ry="6" fill="#2b241f"/>
+            <ellipse class="eye blink" cx="235" cy="142" rx="6" ry="6" fill="#2b241f"/>
             <circle cx="215" cy="158" r="4" fill="#e38b6b"/>
             <path d="M201 169 q14 12 28 0" stroke="#2b241f" stroke-width="3" fill="none" stroke-linecap="round"/>
             <!-- whiskers -->
@@ -161,6 +168,8 @@
 
         <!-- falling item -->
         <div id="fall" class="fall" style="top:190px; display:none;">🍅</div>
+        <!-- combo badge -->
+        <div id="combo" class="combo">x1</div>
 
         <!-- table + pizza -->
         <div class="table">
@@ -191,6 +200,7 @@
         <button id="ovPrimary" class="primary">Play</button>
         <button id="ovSecondary" class="secondary">How to Play</button>
       </div>
+      <p class="ghost" style="margin-top:8px">Tip: Add to Home Screen for full-screen play.</p>
     </div>
   </div>
 
@@ -221,6 +231,7 @@
     pizza: document.getElementById('pizza'),
     zone:  document.getElementById('zone'),
     fall:  document.getElementById('fall'),
+    combo: document.getElementById('combo'),
     pawL:  document.getElementById('pawL'),
     pawR:  document.getElementById('pawR'),
     btnStart:document.getElementById('btnStart'),
@@ -245,6 +256,7 @@
       o.connect(g); g.connect(AC.destination); o.start(); setTimeout(()=>o.stop(), dur);
     }catch(e){}
   }
+  const vibrate = ms => { try{ navigator.vibrate && navigator.vibrate(ms); }catch(e){} };
 
   // State
   let level=1, score=0, best=+localStorage.getItem('pc_best')||0; ui.best.textContent=best;
@@ -252,13 +264,21 @@
   let recipe=[], done=new Set();
   let current=null; // {ing, y, vy}
   let raf=null, spawnLock=false, lastFrame=0;
+  let combo=1, lastCatchTs=0;
+
+  // Tunables
+  const TOL_RADIUS = 24;          // easier catch (was 18)
+  const CATCH_BAND_TOP = -16;     // allow slight early tap
+  const CATCH_BAND_BOTTOM = 10;   // allow slight late tap
+  const BASE_GRAVITY = 0.10;      // smooth physics
+  const DT_NORM = 16.67;
 
   // Helpers
   const rint=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
   const sample=(arr,k)=>{const p=arr.slice(),out=[]; while(out.length<k&&p.length) out.push(p.splice(rint(0,p.length-1),1)[0]); return out;};
   function setMsg(m,c){ ui.bubble.textContent=m; ui.bubble.classList.remove('ok','bad'); if(c) ui.bubble.classList.add(c); }
   function needCount(lvl){ return Math.min(6, 2 + (lvl-1)); }
-  function baseTime(lvl){ return Math.max(18, 30 - Math.floor(lvl*1.6)); }
+  function baseTime(lvl){ return Math.max(20, 32 - Math.floor(lvl*1.5)); }
 
   // Recipe
   function renderRecipe(){
@@ -271,6 +291,27 @@
     });
   }
 
+  // Particles (confetti burst on catch)
+  function burst(x,y){
+    for(let i=0;i<10;i++){
+      const p=document.createElement('div');
+      p.textContent = ['🍅','🧀','🍄','🫒','🌶️','🥬'][i%6];
+      p.style.position='fixed'; p.style.left=x+'px'; p.style.top=y+'px'; p.style.zIndex=9999;
+      p.style.pointerEvents='none'; p.style.filter='drop-shadow(0 2px 1px rgba(0,0,0,.15))';
+      document.body.appendChild(p);
+      const ang=Math.random()*Math.PI*2, sp=2+Math.random()*3;
+      const dx=Math.cos(ang)*sp, dy=Math.sin(ang)*sp;
+      let life=600, start=performance.now();
+      function anim(t){
+        const dt=t-start; const k=dt/life;
+        p.style.transform=`translate(${dx*dt/5}px,${(dy*dt/6 + 0.002*dt*dt)}px) rotate(${dt/3}deg)`;
+        p.style.opacity=String(1-k);
+        if(dt<life) requestAnimationFrame(anim); else p.remove();
+      }
+      requestAnimationFrame(anim);
+    }
+  }
+
   // Game flow
   function startLevel(){
     timeLeft=baseTime(level); ui.time.textContent=timeLeft; ui.level.textContent=level;
@@ -279,18 +320,25 @@
     running=true; setMsg(`Level ${level}! Tap pizza when the right topping falls.`);
     clearInterval(timer);
     timer=setInterval(()=>{ if(!running) return; timeLeft--; ui.time.textContent=timeLeft; if(timeLeft<=0){ endGame(); } },1000);
+    combo=1; ui.combo.style.display='none';
     spawnNext();
   }
   function pause(){ running=false; setMsg('Paused. Tap Start to resume.'); clearRaf(); }
-  function resume(){ if(running) return; running=true; setMsg('Go go go!'); lastFrame=0; animate(performance.now()); }
+  function resume(){
+    if(running) return;
+    running=true; setMsg('Go go go!');
+    lastFrame=0; animate(performance.now());
+  }
   function endGame(){
     running=false; clearInterval(timer); clearRaf();
     if(score>best){best=score; localStorage.setItem('pc_best',best); ui.best.textContent=best;}
-    showOverlay('Out of time! ⏳','The customer left… Try again!', [`Level ${level}`,`Score ${score}`,`Best ${best}`],
-      'Play Again','How to Play', ()=>{ level=1; score=0; ui.score.textContent=score; startLevel(); }, howTo);
+    showOverlay('Out of time! ⏳','The customer left… Try again!',
+      [`Level ${level}`,`Score ${score}`,`Best ${best}`],
+      'Play Again','How to Play',
+      ()=>{ level=1; score=0; ui.score.textContent=score; startLevel(); }, howTo);
   }
 
-  // Spawn with smooth start (vy small) and eased gravity
+  // Spawn with smooth start
   function spawnNext(){
     if(!running||spawnLock) return; spawnLock=true;
     ui.pawL.classList.add('drop'); ui.pawR.classList.add('drop'); setTimeout(()=>{ui.pawL.classList.remove('drop'); ui.pawR.classList.remove('drop');},550);
@@ -299,7 +347,7 @@
     const pickNeeded = Math.random()<0.7 && needed.length>0;
     const ing = (pickNeeded?needed:ING)[rint(0,(pickNeeded?needed:ING).length-1)];
 
-    current={ing, y:200, vy: 0.2}; // start slow for smooth drop
+    current={ing, y:200, vy: 0.18}; // smoother start
     ui.fall.textContent=ing.emo; ui.fall.style.top=current.y+'px'; ui.fall.style.display='block';
     ui.fall.classList.remove('squash');
     lastFrame = 0;
@@ -310,18 +358,16 @@
     if(!running||!current) return;
     raf=requestAnimationFrame(animate);
 
-    // time-based physics for smoothness on all devices
     if(!lastFrame) lastFrame = ts;
-    const dt = Math.min(40, ts - lastFrame); // cap delta to avoid jumps
-    lastFrame = ts;
+    const dt = Math.min(40, ts - lastFrame); lastFrame = ts;
 
-    // easing gravity: accelerate slightly more as time passes
-    const g = (0.10 + level*0.02) * (dt/16.67); // normalized to 60fps
+    // easing gravity
+    const g = (BASE_GRAVITY + level*0.02) * (dt/DT_NORM);
     current.vy += g;
-    current.y  += current.vy * (dt/16.67);
+    current.y  += current.vy * (dt/DT_NORM);
     ui.fall.style.top=current.y+'px';
 
-    // miss when it passes the table
+    // miss when it passes the table bottom
     const tableRect = document.querySelector('.table').getBoundingClientRect();
     if(current.y > tableRect.bottom - 30){
       handleMiss();
@@ -329,10 +375,10 @@
   }
   function clearRaf(){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
 
-  // More-forgiving catch (radius tolerance + strict vertical check)
+  // Catch (forgiving but fair)
   ui.zone.addEventListener('click', tryCatch, {passive:true});
   ui.zone.addEventListener('touchstart', tryCatch, {passive:true});
-  function tryCatch(){
+  function tryCatch(ev){
     if(!running||!current) return;
 
     const pizzaRect = ui.pizza.getBoundingClientRect();
@@ -343,43 +389,61 @@
     const fx = fallRect.left  + fallRect.width / 2;
     const fy = fallRect.top   + fallRect.height / 2;
 
-    const radius     = (pizzaRect.width / 2) * 0.92;
-    const TOL_RADIUS = 18;         // edge forgiveness
+    const radius = (pizzaRect.width / 2) * 0.92;
     const inside = ((fx-px)**2 + (fy-py)**2) <= (radius + TOL_RADIUS)**2;
 
-    // Must be within vertical band of pizza (and not already passed)
-    if (fy < pizzaRect.top - 12 || fy > pizzaRect.bottom + 6) return;
+    // Vertical band check with grace; but disallow after it clearly passed
+    if (fy < pizzaRect.top + CATCH_BAND_TOP || fy > pizzaRect.bottom + CATCH_BAND_BOTTOM) return;
 
     const needed = recipe.some(r => r.id === current.ing.id) && !done.has(current.ing.id);
 
     if (inside && needed) {
+      // combo logic (3s window)
+      const now = performance.now();
+      combo = (now - lastCatchTs) <= 3000 ? Math.min(5, combo+1) : 1;
+      lastCatchTs = now;
+      showCombo();
+
       ui.fall.classList.add('squash');
       placeOnPizza(current.ing.emo);
       done.add(current.ing.id); renderRecipe();
-      score += 120 + Math.floor(timeLeft*2); ui.score.textContent=score;
-      setMsg(`Nice! Caught ${current.ing.name}.`, 'ok'); beep(760, 90, 'sine', 0.08);
+
+      const gained = Math.round((120 + Math.floor(timeLeft*2)) * (1 + (combo-1)*0.15));
+      score += gained; ui.score.textContent=score;
+      setMsg(`Nice! Caught ${current.ing.name}. +${gained}`, 'ok'); beep(780,90,'sine',0.08); vibrate(20);
+
+      // confetti burst at tap point
+      if(ev && ev.touches && ev.touches[0]) burst(ev.touches[0].clientX, ev.touches[0].clientY);
+      else if(ev) burst(fx, fy);
 
       ui.fall.style.display='none'; current=null; spawnLock=false;
-      nextOrWin(); if(running) setTimeout(spawnNext, 300);
+      nextOrWin(); if(running) setTimeout(spawnNext, 260);
     } else if (inside && !needed) {
       timeLeft = Math.max(0, timeLeft - 3); ui.time.textContent = timeLeft;
-      setMsg(`We don’t need ${current.ing.name}! -3s`, 'bad'); beep(220, 150, 'sawtooth', 0.06);
+      setMsg(`We don’t need ${current.ing.name}! -3s`, 'bad'); beep(220, 150, 'sawtooth', 0.06); vibrate(15);
 
       ui.fall.style.display='none'; current=null; spawnLock=false;
-      if(running) setTimeout(spawnNext, 300);
+      if(running) setTimeout(spawnNext, 260);
     }
+  }
+
+  function showCombo(){
+    if(combo<=1){ ui.combo.style.display='none'; return; }
+    ui.combo.style.display='block';
+    ui.combo.textContent = 'x'+combo;
+    ui.combo.animate([{transform:'scale(1)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:220});
   }
 
   function handleMiss(){
     const wasNeeded = recipe.some(r=>r.id===current.ing.id) && !done.has(current.ing.id);
     if(wasNeeded){
       timeLeft = Math.max(0, timeLeft-4); ui.time.textContent=timeLeft;
-      setMsg(`Missed a required ${current.ing.name}! -4s`,'bad'); beep(160,170,'triangle',0.06);
+      setMsg(`Missed a required ${current.ing.name}! -4s`,'bad'); beep(160,170,'triangle',0.06); vibrate(25);
     }else{
       setMsg(`Ignored extra ${current.ing.name}.`);
     }
     ui.fall.style.display='none'; current=null; spawnLock=false;
-    if(running) setTimeout(spawnNext, 350);
+    if(running) setTimeout(spawnNext, 320);
     clearRaf();
   }
 
@@ -389,7 +453,7 @@
       const bonus = Math.floor(timeLeft*10); score+=bonus; ui.score.textContent=score;
       if(score>best){best=score; localStorage.setItem('pc_best',best); ui.best.textContent=best;}
       showOverlay('Pizza up! 🍕', `Level ${level} complete. Time bonus +${bonus}.`,
-        [`Next: Level ${level+1}`, `Score ${score}`],
+        [`Next: Level ${level+1}`, `Score ${score}`, combo>1?`Combo x${combo}`:''],
         'Next Level','How to Play', ()=>{ level++; startLevel(); }, howTo);
     }
   }
@@ -407,7 +471,7 @@
   // Overlay utilities
   function showOverlay(title,msg,badges=[],primary='Play',secondary='How to Play',onP=null,onS=null){
     ui.ovTitle.textContent=title; ui.ovMsg.textContent=msg; ui.ovBadges.innerHTML='';
-    badges.forEach(b=>{const p=document.createElement('div');p.className='pill';p.textContent=b;ui.ovBadges.appendChild(p);});
+    badges.filter(Boolean).forEach(b=>{const p=document.createElement('div');p.className='pill';p.textContent=b;ui.ovBadges.appendChild(p);});
     ui.overlay.classList.add('show');
     ui.ovPrimary.textContent=primary; ui.ovSecondary.textContent=secondary;
     ui.ovPrimary.onclick=()=>{ ui.overlay.classList.remove('show'); if(onP) onP(); };
@@ -415,23 +479,34 @@
   }
   function howTo(){
     showOverlay('How to Play',
-      'A topping drops from the calico cat. Tap the pizza ONLY while a required topping is directly over the pizza. Missing a required topping or catching a wrong one costs time. Finish the recipe before time runs out.',
-      ['Longer drop path','Realistic calico','Smooth physics'], 'Got it','Close',
-      ()=>{ ui.overlay.classList.remove('show'); if(!running){ startLevel(); } },
+      'A topping drops from the calico cat. Tap the pizza ONLY while a required topping is over it. Missing a required topping or catching a wrong one costs time. Chain fast catches to build COMBO for bonus points.',
+      ['Longer drop path','Realistic calico','Smooth physics','Combo bonus'],
+      'Start Playing','Close',
+      ()=>{ ui.overlay.classList.remove('show'); startLevel(); }, // ← start immediately after instructions
       ()=>{ ui.overlay.classList.remove('show'); });
   }
 
   // Buttons
   ui.btnStart.addEventListener('click', ()=>{
     try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
-    if(!running && timeLeft===30 && score===0 && level===1) howTo(); else resume();
+    // If game not started yet or just finished instructions, start fresh
+    if(!running && (!recipe.length || timeLeft===0 || done.size===recipe.length)) {
+      startLevel();
+    } else {
+      resume();
+    }
   });
   ui.btnPause.addEventListener('click', ()=>pause());
   ui.btnSound.addEventListener('click', ()=>{ soundOn=!soundOn; ui.btnSound.textContent=soundOn?'🔊':'🔇'; });
 
-  // Boot
-  showOverlay('Pizza Cat — Drop Edition','Catch toppings by tapping the pizza. Only catch what the order ticket shows!',
-    ['Longer Drop','Table View','Best Score'], 'Play','How to Play', ()=>startLevel(), howTo);
+  // Boot – show welcome overlay with direct Play
+  showOverlay('Pizza Cat — Drop Edition',
+    'Catch toppings by tapping the pizza. Only catch what the order ticket shows!',
+    ['Smooth physics','Forgiving catch','Combo bonus'],
+    'Play','How to Play',
+    ()=>startLevel(),
+    ()=>howTo()
+  );
 })();
 </script>
 </body>

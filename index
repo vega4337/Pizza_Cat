@@ -1,1 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>🍕🐱 Pizza Cat</title>
+<style>
+  :root{
+    --bg:#fff7ee;
+    --panel:#ffe3c4;
+    --accent:#ff9f43;
+    --accent2:#ff6b6b;
+    --ok:#2ecc71;
+    --bad:#e74c3c;
+    --text:#5b4636;
+    --board:#fbe3c9;
+    --dough:#f6d3a8;
+    --crust:#e0a76b;
+    --shadow:rgba(0,0,0,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+    display:flex; align-items:center; justify-content:center;
+    padding:14px; -webkit-user-select:none; user-select:none; touch-action:manipulation;
+  }
+  .wrap{width:min(760px,100%); max-width:760px}
+  header{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--panel); padding:10px 12px; border-radius:14px; box-shadow:0 6px 18px var(--shadow);
+  }
+  .title{font-weight:900; font-size:20px}
+  .stats{display:flex; gap:10px; flex-wrap:wrap}
+  .badge{
+    background:#fff; padding:8px 10px; border-radius:10px; min-width:92px; text-align:center;
+    box-shadow:0 4px 12px var(--shadow);
+  }
+  .badge .label{font-size:11px; opacity:.7}
+  .badge .val{font-weight:900; font-size:18px}
+  .controls{display:flex; gap:8px}
+  button{
+    appearance:none; border:0; border-radius:10px; padding:10px 12px; font-weight:800; cursor:pointer;
+    background:var(--accent); color:#fff; box-shadow:0 6px 18px var(--shadow);
+  }
+  button.secondary{background:#fff; color:var(--accent); border:2px solid var(--accent)}
+  button:active{transform:translateY(1px)}
+  main{
+    display:grid; grid-template-columns: 1.2fr .8fr; gap:12px; margin-top:12px;
+  }
+  @media (max-width: 720px){ main{grid-template-columns:1fr;}}
+  .board{
+    background:var(--board); border-radius:16px; padding:12px; box-shadow:0 10px 28px var(--shadow); position:relative;
+    min-height:54vh;
+  }
+  .pizza-zone{
+    position:relative; margin:10px auto; width:min(80vmin,520px); height:min(80vmin,520px);
+    max-width:100%; max-height:100%; display:flex; align-items:center; justify-content:center;
+  }
+  .pizza{
+    position:relative; width:88%; aspect-ratio:1/1; border-radius:50%;
+    background: radial-gradient(circle at 50% 45%, var(--dough) 0 58%, var(--crust) 60% 100%);
+    box-shadow: inset 0 12px 24px rgba(0,0,0,.08), 0 8px 20px var(--shadow);
+    overflow:hidden;
+  }
+  .topping-dot{
+    position:absolute; font-size: clamp(20px, 4.4vmin, 36px); pointer-events:none; filter: drop-shadow(0 2px 1px rgba(0,0,0,.15));
+    transform: translate(-50%,-50%) scale(0); animation: pop .16s ease-out forwards;
+  }
+  @keyframes pop{to{transform:translate(-50%,-50%) scale(1)}}
 
+  .order{
+    background:#fff; border-radius:14px; padding:12px; box-shadow:0 8px 22px var(--shadow); margin-bottom:10px;
+  }
+  .order h3{margin:0 0 6px; font-size:16px}
+  .reqs{display:flex; flex-wrap:wrap; gap:8px}
+  .req{
+    background:var(--panel); border-radius:10px; padding:6px 8px; display:flex; align-items:center; gap:6px; font-weight:700;
+    border:2px solid transparent;
+  }
+  .req.done{opacity:.45; text-decoration:line-through}
+  .req .emo{font-size:18px}
+  .tray{
+    background:#fff; border-radius:14px; padding:10px; box-shadow:0 8px 22px var(--shadow);
+    min-height:120px;
+  }
+  .tray h3{margin:0 0 6px; font-size:15px}
+  .tray-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:8px}
+  @media (max-width:520px){ .tray-grid{grid-template-columns:repeat(5,1fr)} }
+  .item{
+    background:linear-gradient(#fff, #f9f9f9); border-radius:12px; padding:8px 6px; text-align:center; box-shadow:0 4px 12px var(--shadow);
+    font-size:28px; position:relative; touch-action:none;
+  }
+  .item .label{display:block; font-size:11px; color:#7a5b45; margin-top:2px}
+  .item.dragging{opacity:.85; transform:scale(1.06); z-index:5; box-shadow:0 10px 20px rgba(0,0,0,.25)}
+  .catbox{
+    background:#fff; border-radius:16px; padding:12px; box-shadow:0 8px 22px var(--shadow);
+    display:flex; gap:12px; align-items:center; min-height:110px;
+  }
+  .cat{font-size:48px; transition: transform .1s}
+  .bubble{
+    background:var(--panel); border-radius:14px; padding:10px 12px; flex:1; font-size:14px; line-height:1.35;
+    border:2px dashed var(--accent); min-height:64px; display:flex; align-items:center;
+  }
+  .bubble.ok{border-color:var(--ok)}
+  .bubble.bad{border-color:var(--bad)}
+  .hint{font-size:12px; opacity:.7; margin-top:6px}
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(255,247,238,.96); display:none; align-items:center; justify-content:center; padding:18px; z-index:50;
+  }
+  .overlay.show{display:flex}
+  .card{
+    background:#fff; border-radius:16px; padding:18px; width:min(560px,96%); box-shadow:0 16px 40px rgba(0,0,0,.18); text-align:center;
+  }
+  .card h2{margin:0 0 6px}
+  .card p{margin:6px 0 12px}
+  .grid-small{display:flex; gap:6px; flex-wrap:wrap; justify-content:center}
+  .pill{background:var(--panel); border-radius:999px; padding:6px 10px; font-weight:700}
+  .mute{margin-left:6px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">🍕🐱 <strong>Pizza Cat</strong></div>
+      <div class="stats">
+        <div class="badge"><div class="label">LEVEL</div><div class="val" id="uiLevel">1</div></div>
+        <div class="badge"><div class="label">TIME</div><div class="val" id="uiTime">30</div></div>
+        <div class="badge"><div class="label">SCORE</div><div class="val" id="uiScore">0</div></div>
+        <div class="badge"><div class="label">BEST</div><div class="val" id="uiBest">0</div></div>
+      </div>
+      <div class="controls">
+        <button id="btnStart">Start</button>
+        <button class="secondary" id="btnPause">Pause</button>
+        <button class="secondary mute" id="btnSound">🔊</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="board">
+        <div class="order">
+          <h3>Order Ticket 🍽️ — Add these toppings:</h3>
+          <div id="reqs" class="reqs"></div>
+        </div>
+        <div class="pizza-zone" id="dropZone">
+          <div class="pizza" id="pizza"></div>
+        </div>
+        <div class="tray">
+          <h3>Ingredient Tray — Drag onto the pizza</h3>
+          <div id="tray" class="tray-grid"></div>
+          <div class="hint">Tip: Only drop ingredients that are on the order ticket. Wrong drops cost time.</div>
+        </div>
+      </section>
+
+      <aside>
+        <div class="catbox">
+          <div id="cat" class="cat">😺</div>
+          <div id="bubble" class="bubble">Welcome to Pizza Cat! Drag the right toppings onto the dough. Ready?</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true">
+    <div class="card">
+      <h2 id="ovTitle">Pizza Cat</h2>
+      <p id="ovMsg">Make pizzas by dragging the correct emoji toppings onto the dough before time runs out.</p>
+      <div class="grid-small" id="ovBadges"></div>
+      <div style="margin-top:12px; display:flex; gap:8px; justify-content:center">
+        <button id="ovPrimary">Play</button>
+        <button class="secondary" id="ovSecondary">How to Play</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ---- Data ----
+  const INGREDIENTS = [
+    { id:'cheese', name:'Cheese', emo:'🧀' },
+    { id:'tomato', name:'Tomato', emo:'🍅' },
+    { id:'pep',    name:'Pepperoni', emo:'🥓' }, // using bacon emo for "pepperoni vibe"
+    { id:'mush',   name:'Mushroom', emo:'🍄' },
+    { id:'olive',  name:'Olive', emo:'🫒' },
+    { id:'onion',  name:'Onion', emo:'🧅' },
+    { id:'pine',   name:'Pineapple', emo:'🍍' },
+    { id:'pepper', name:'Pepper', emo:'🌶️' },
+    { id:'shrimp', name:'Shrimp', emo:'🍤' },
+    { id:'leaf',   name:'Leafy Greens', emo:'🥬' }
+  ];
+
+  const ui = {
+    level: document.getElementById('uiLevel'),
+    time:  document.getElementById('uiTime'),
+    score: document.getElementById('uiScore'),
+    best:  document.getElementById('uiBest'),
+    reqs:  document.getElementById('reqs'),
+    tray:  document.getElementById('tray'),
+    pizza: document.getElementById('pizza'),
+    zone:  document.getElementById('dropZone'),
+    cat:   document.getElementById('cat'),
+    bubble:document.getElementById('bubble'),
+    btnStart: document.getElementById('btnStart'),
+    btnPause: document.getElementById('btnPause'),
+    btnSound: document.getElementById('btnSound'),
+    overlay:  document.getElementById('overlay'),
+    ovTitle:  document.getElementById('ovTitle'),
+    ovMsg:    document.getElementById('ovMsg'),
+    ovBadges: document.getElementById('ovBadges'),
+    ovPrimary:document.getElementById('ovPrimary'),
+    ovSecondary:document.getElementById('ovSecondary')
+  };
+
+  // ---- Audio (tiny beeps, no assets) ----
+  let soundOn = true;
+  let ctx = null;
+  function beep(freq=660, dur=100, type='sine', vol=0.08){
+    if (!soundOn) return;
+    try{
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.value = vol;
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      setTimeout(()=>{o.stop();}, dur);
+    }catch(e){}
+  }
+
+  // ---- State ----
+  let level = 1;
+  let score = 0;
+  let best = +localStorage.getItem('pizza_cat_best') || 0;
+  ui.best.textContent = best;
+  let timeLeft = 30;
+  let timerId = null;
+  let running = false;
+
+  let order = [];             // [{id, name, emo}]
+  let fulfilled = new Set();  // ids fulfilled
+  let trayItems = [];         // current draggable items (DOM and data)
+  let spawnId = null;
+
+  // ---- Helpers ----
+  function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+  function sample(arr, k){
+    const pool = arr.slice(); const out=[];
+    while (out.length<k && pool.length){
+      out.push(pool.splice(rand(0,pool.length-1),1)[0]);
+    }
+    return out;
+  }
+  function setCat(face){ ui.cat.textContent = face; }
+  function say(msg, cls){
+    ui.bubble.textContent = msg;
+    ui.bubble.classList.remove('ok','bad');
+    if (cls) ui.bubble.classList.add(cls);
+  }
+  function withinPizza(x,y){
+    const r = ui.pizza.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dx = x - cx, dy = y - cy;
+    const rad = r.width/2;
+    return (dx*dx + dy*dy) <= (rad*rad);
+  }
+  function placeTopping(emo){
+    const r = ui.pizza.getBoundingClientRect();
+    const pad = r.width*0.18;
+    const x = rand(r.left+pad, r.right-pad);
+    const y = rand(r.top+pad, r.bottom-pad);
+    const dot = document.createElement('div');
+    dot.className = 'topping-dot';
+    dot.textContent = emo;
+    dot.style.left = x + 'px';
+    dot.style.top = y + 'px';
+    document.body.appendChild(dot);
+    // move into pizza coords
+    const px = x - r.left; const py = y - r.top;
+    dot.style.left = (r.left + px) + 'px';
+    dot.style.top = (r.top + py) + 'px';
+    // convert to pizza-local positioning:
+    requestAnimationFrame(()=> {
+      dot.style.left = (r.left + px) + 'px';
+      dot.style.top  = (r.top + py) + 'px';
+    });
+    // keep dot inside pizza element:
+    setTimeout(()=>{
+      dot.style.position='absolute';
+      ui.pizza.appendChild(dot);
+      dot.style.left = (px) + 'px';
+      dot.style.top  = (py) + 'px';
+    }, 10);
+  }
+
+  // ---- Order UI ----
+  function renderOrder(){
+    ui.reqs.innerHTML = '';
+    order.forEach(it=>{
+      const div = document.createElement('div');
+      div.className='req' + (fulfilled.has(it.id)?' done':'');
+      div.dataset.id = it.id;
+      div.innerHTML = `<span class="emo">${it.emo}</span> <span>${it.name}</span>`;
+      ui.reqs.appendChild(div);
+    });
+  }
+
+  // ---- Tray spawn ----
+  function spawnLoop(){
+    clearInterval(spawnId);
+    spawnId = setInterval(spawnOne, Math.max(900 - level*40, 420));
+  }
+  function spawnOne(){
+    // limit tray
+    if (trayItems.length >= 12){
+      removeTrayItem(trayItems[0]);
+    }
+    // choose ingredient: prefer needed and not done
+    const neededLeft = order.filter(o=>!fulfilled.has(o.id));
+    const pickNeeded = Math.random() < 0.7 && neededLeft.length>0;
+    const src = pickNeeded ? neededLeft : INGREDIENTS;
+    const ing = src[rand(0, src.length-1)];
+    createTrayItem(ing);
+  }
+  function createTrayItem(ing){
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `<div class="emo">${ing.emo}</div><div class="label">${ing.name}</div>`;
+    ui.tray.appendChild(el);
+    const obj = {el, ing};
+    trayItems.push(obj);
+    makeDraggable(obj);
+  }
+  function removeTrayItem(obj){
+    trayItems = trayItems.filter(t=>t!==obj);
+    obj.el.remove();
+  }
+
+  // ---- Drag & drop ----
+  function makeDraggable(obj){
+    const el = obj.el;
+    let sx=0, sy=0, ox=0, oy=0, dragging=false;
+
+    function setPos(x,y){
+      el.style.position='fixed';
+      el.style.left = (x-ox) + 'px';
+      el.style.top  = (y-oy) + 'px';
+    }
+    function start(x,y){
+      dragging=true; el.classList.add('dragging'); beep(520,60,'triangle',0.05);
+      const r = el.getBoundingClientRect();
+      ox = x - r.left; oy = y - r.top;
+      setPos(x,y);
+    }
+    function move(x,y){
+      if(!dragging) return; setPos(x,y);
+    }
+    function end(x,y){
+      if(!dragging) return;
+      dragging=false; el.classList.remove('dragging');
+      el.style.position=''; el.style.left=''; el.style.top='';
+
+      if (withinPizza(x,y)){
+        handleDrop(obj);
+      }
+    }
+
+    // Mouse
+    el.addEventListener('mousedown', (e)=>{ e.preventDefault(); start(e.clientX,e.clientY); });
+    window.addEventListener('mousemove', (e)=>move(e.clientX,e.clientY));
+    window.addEventListener('mouseup',   (e)=>end(e.clientX,e.clientY));
+
+    // Touch
+    el.addEventListener('touchstart', (e)=>{ const t=e.changedTouches[0]; start(t.clientX,t.clientY); }, {passive:true});
+    window.addEventListener('touchmove', (e)=>{ const t=e.changedTouches[0]; move(t.clientX,t.clientY); }, {passive:true});
+    window.addEventListener('touchend',  (e)=>{ const t=e.changedTouches[0]; end(t.clientX,t.clientY); }, {passive:true});
+  }
+
+  function handleDrop(obj){
+    const id = obj.ing.id;
+    const needed = order.some(o=>o.id===id) && !fulfilled.has(id);
+    if (needed){
+      fulfilled.add(id);
+      renderOrder();
+      placeTopping(obj.ing.emo);
+      removeTrayItem(obj);
+      score += 100 + Math.floor(timeLeft*2);
+      ui.score.textContent = score;
+      setCat('😻'); say(`Nice! Added ${obj.ing.name}.`, 'ok'); beep(740,90,'sine',0.07);
+      if (fulfilled.size === order.length){
+        levelComplete();
+      }
+    } else {
+      // penalty
+      timeLeft = Math.max(0, timeLeft - 3);
+      ui.time.textContent = timeLeft;
+      setCat('😿'); say(`Oops, we didn't need ${obj.ing.name}! -3s.`, 'bad'); beep(220,160,'sawtooth',0.06);
+      // small shake
+      ui.pizza.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180});
+    }
+  }
+
+  // ---- Levels & flow ----
+  function baseTimeForLevel(lvl){ return Math.max(18, 28 - Math.floor(lvl*1.4)); }
+  function orderCountForLevel(lvl){ return Math.min(6, 2 + Math.floor((lvl-1)/1)); }
+
+  function newOrder(){
+    fulfilled.clear();
+    const k = orderCountForLevel(level);
+    order = sample(INGREDIENTS, k);
+    renderOrder();
+    ui.pizza.innerHTML = ''; // clear toppings
+  }
+
+  function startLevel(){
+    timeLeft = baseTimeForLevel(level);
+    ui.level.textContent = level;
+    ui.time.textContent = timeLeft;
+    newOrder();
+    ui.tray.innerHTML = ''; trayItems = [];
+    clearInterval(spawnId); spawnLoop();
+    tickStart();
+    running = true;
+    say(`Level ${level}! Make this pizza fast!`);
+    setCat('😺');
+  }
+
+  function levelComplete(){
+    running = false;
+    clearInterval(timerId); clearInterval(spawnId);
+    const bonus = Math.floor(timeLeft*10);
+    score += bonus;
+    ui.score.textContent = score;
+    if (score>best){ best=score; localStorage.setItem('pizza_cat_best', best); ui.best.textContent = best; }
+    showOverlay(`Pizza up! 🍕`, `You finished Level ${level}. Time bonus: +${bonus} points.`, [
+      {label:`Level ${level+1}`, pill:true},
+      {label:`Score ${score}`, pill:true}
+    ], 'Next Level', 'How to Play', () => {
+      level++;
+      startLevel();
+    }, showHowTo);
+  }
+
+  function gameOver(){
+    running = false;
+    clearInterval(timerId); clearInterval(spawnId);
+    if (score>best){ best=score; localStorage.setItem('pizza_cat_best', best); ui.best.textContent = best; }
+    showOverlay('Out of time! ⏳', 'The customer left… but Pizza Cat believes in you. Try again!', [
+      {label:`Level ${level}`, pill:true},
+      {label:`Score ${score}`, pill:true},
+      {label:`Best ${best}`, pill:true}
+    ], 'Play Again', 'How to Play', () => {
+      level = 1; score = 0; ui.score.textContent = score; startLevel();
+    }, showHowTo);
+  }
+
+  function tickStart(){
+    clearInterval(timerId);
+    timerId = setInterval(()=>{
+      if (!running) return;
+      timeLeft -= 1;
+      ui.time.textContent = timeLeft;
+      if (timeLeft<=0){ gameOver(); }
+    }, 1000);
+  }
+
+  function pause(){
+    if (!running) return;
+    running = false; clearInterval(timerId); clearInterval(spawnId);
+    say('Paused. Tap Start to resume.');
+    setCat('😺');
+  }
+
+  function resume(){
+    if (running) return;
+    running = true; tickStart(); spawnLoop();
+    say('Go go go!');
+  }
+
+  // ---- Overlay ----
+  function showOverlay(title,msg,badges=[], primary='Play', secondary='How to Play', onPrimary=null, onSecondary=null){
+    ui.ovTitle.textContent = title;
+    ui.ovMsg.textContent = msg;
+    ui.ovBadges.innerHTML = '';
+    badges.forEach(b=>{
+      const s = document.createElement('div'); s.className='pill'; s.textContent=b.label; ui.ovBadges.appendChild(s);
+    });
+    ui.overlay.classList.add('show');
+    ui.ovPrimary.textContent = primary;
+    ui.ovSecondary.textContent = secondary;
+    ui.ovPrimary.onclick = () => { ui.overlay.classList.remove('show'); if (onPrimary) onPrimary(); };
+    ui.ovSecondary.onclick = () => { if (onSecondary) onSecondary(); };
+  }
+
+  function showHowTo(){
+    showOverlay('How to Play', 
+      'Drag the correct toppings from the tray onto the pizza. Only use the toppings listed on the Order Ticket. Wrong drops cost 3 seconds. Clear all required toppings before time runs out to finish the level. Each level needs more toppings and has less time.',
+      INGREDIENTS.slice(0,8).map(i=>({label:`${i.emo} ${i.name}`})),
+      'Got it', 'Close', ()=>{ ui.overlay.classList.remove('show'); if (!running){ startLevel(); } },
+      ()=>{ ui.overlay.classList.remove('show'); });
+  }
+
+  // ---- Buttons ----
+  ui.btnStart.addEventListener('click', ()=>{
+    // unlock audio on first tap
+    try{ if (!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+    if (!running && timeLeft===30 && score===0 && level===1){
+      showHowTo();
+    } else if (!running){
+      resume();
+    }
+  });
+  ui.btnPause.addEventListener('click', ()=> pause());
+  ui.btnSound.addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    ui.btnSound.textContent = soundOn ? '🔊' : '🔇';
+  });
+
+  // ---- Init screen ----
+  showOverlay('Pizza Cat', 'Make delicious emoji pizzas! Drag the right toppings onto the dough before the timer runs out.',
+    [{label:'Drag & Drop'}, {label:'Timer'}, {label:'Levels'}, {label:'Best Score'}],
+    'Play', 'How to Play', ()=>{ startLevel(); }, showHowTo);
+
+})();
+</script>
+</body>
+</html>

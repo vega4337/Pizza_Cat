@@ -2,20 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>🍕🐱 Pizza Cat — Drop Edition</title>
 <style>
   :root{
     --bg:#fff7ee; --panel:#ffe3c4; --ink:#3f3025; --accent:#ff9f43;
     --ok:#2ecc71; --bad:#e74c3c; --shadow:rgba(0,0,0,.12);
     --dough:#f6d3a8; --crust:#e0a76b; --board:#fbe3c9; --wood1:#f6d6a8; --wood2:#e9c38f;
+    /* iOS safe area insets */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
   *{box-sizing:border-box}
-  html,body{height:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink)}
+  html{
+    height: 100%;
+    /* Fix for iOS viewport */
+    height: -webkit-fill-available;
+  }
   body{
-    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-    display:flex; align-items:center; justify-content:center; padding:14px; -webkit-user-select:none; user-select:none;
+    min-height: 100vh;
+    /* iOS viewport fix */
+    min-height: -webkit-fill-available;
+    max-width:100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+    background:var(--bg);
+    color:var(--ink);
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    /* Safe area padding for iPhone */
+    padding: max(8px, var(--safe-top)) max(14px, var(--safe-right)) max(8px, var(--safe-bottom)) max(14px, var(--safe-left));
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  /* Mobile portrait optimization */
+  @media (max-width: 768px) and (orientation: portrait) {
+    body {
+      align-items: flex-start;
+      padding-top: max(6px, var(--safe-top));
+      padding-bottom: max(6px, var(--safe-bottom));
+    }
   }
   .wrap{width:min(920px,100%); margin:0 auto;}
   header{
@@ -32,8 +66,45 @@
   .secondary{background:#fff;color:var(--accent);border:2px solid var(--accent)}
   .mute{min-width:44px}
 
+  /* Mobile portrait header optimization */
+  @media (max-width: 768px) and (orientation: portrait) {
+    header {
+      padding: 8px 10px;
+      gap: 8px;
+    }
+    .title {
+      font-size: 16px;
+      width: 100%;
+    }
+    .badges {
+      gap: 6px;
+      width: 100%;
+    }
+    .badge {
+      flex: 1;
+      min-width: 70px;
+      padding: 4px 6px;
+    }
+    .badge .l {
+      font-size: 9px;
+    }
+    .badge .v {
+      font-size: 15px;
+    }
+    button {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+  }
+
   main{display:grid;grid-template-columns:1.25fr .75fr;gap:12px;margin-top:12px}
   @media(max-width:980px){main{grid-template-columns:1fr}}
+  @media (max-width: 768px) and (orientation: portrait) {
+    main {
+      gap: 10px;
+      margin-top: 10px;
+    }
+  }
   .stage{background:var(--board);border-radius:16px;padding:12px;box-shadow:0 12px 28px var(--shadow);position:relative;overflow:hidden}
   .right{display:flex;flex-direction:column;gap:10px}
   .panel{background:#fff;border-radius:14px;padding:12px;box-shadow:0 8px 22px var(--shadow)}
@@ -43,6 +114,36 @@
   .req.done{opacity:.4;text-decoration:line-through}
   .bubble{border:2px dashed var(--accent);border-radius:14px;padding:10px 12px;min-height:54px}
   .ok{border-color:var(--ok)!important}.bad{border-color:var(--bad)!important}
+  /* Mobile portrait panel optimization */
+  @media (max-width: 768px) and (orientation: portrait) {
+    .stage {
+      padding: 10px;
+      border-radius: 12px;
+    }
+    .right {
+      gap: 8px;
+    }
+    .panel {
+      padding: 10px;
+      border-radius: 12px;
+    }
+    .order h3 {
+      font-size: 14px;
+      margin: 0 0 5px;
+    }
+    .reqs {
+      gap: 6px;
+    }
+    .req {
+      padding: 5px 7px;
+      font-size: 13px;
+    }
+    .bubble {
+      padding: 8px 10px;
+      min-height: 46px;
+      font-size: 14px;
+    }
+  }
 
   /* Cat box – tall for long drop */
   .catbox{
@@ -50,6 +151,12 @@
     display:flex;align-items:center;justify-content:center;overflow:hidden
   }
   svg{max-width:100%;height:100%}
+  /* Mobile portrait cat optimization */
+  @media (max-width: 768px) and (orientation: portrait) {
+    .catbox {
+      height: 220px;
+    }
+  }
   .paw{transform-origin:center;animation:pawIdle 1.6s ease-in-out infinite}
   .paw.drop{animation:pawDrop .55s ease-in-out 1}
   @keyframes pawIdle{0%,100%{transform:rotate(0)}50%{transform:rotate(2deg)}}
@@ -76,6 +183,17 @@
     display:flex; align-items:flex-start; justify-content:center; padding-top:46px; max-width:100%;
   }
   .pizza-zone{position:relative;width:min(86vmin,620px);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;max-width:100%}
+  /* Mobile portrait table/pizza optimization */
+  @media (max-width: 768px) and (orientation: portrait) {
+    .table {
+      margin: 16px auto 6px;
+      width: min(92vw, 420px);
+      padding-top: 28px;
+    }
+    .pizza-zone {
+      width: min(85vw, 380px);
+    }
+  }
   .pizza{
     width:84%; height:84%; border-radius:50%;
     background: radial-gradient(circle at 50% 45%, var(--dough) 0 58%, var(--crust) 60% 100%);
@@ -93,13 +211,48 @@
   }
 
   /* Overlay */
-  .overlay{position:fixed; inset:0; background:rgba(255,247,238,.96); display:none; align-items:center; justify-content:center; padding:18px; z-index:50}
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(255,247,238,.96);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    z-index:50;
+    /* Respect safe areas */
+    padding-top: max(18px, var(--safe-top));
+    padding-bottom: max(18px, var(--safe-bottom));
+  }
   .overlay.show{display:flex}
-  .card{background:#fff; border-radius:16px; padding:18px; width:min(560px,96%); text-align:center; box-shadow:0 16px 40px rgba(0,0,0,.18)}
+  .card{background:#fff; border-radius:16px; padding:18px; width:min(560px,96%); text-align:center; box-shadow:0 16px 40px rgba(0,0,0,.18); max-height:90vh; overflow-y:auto;}
   .card h2{margin:0 0 6px}
   .grid{display:flex; gap:6px; flex-wrap:wrap; justify-content:center}
   .pill{background:var(--panel); border-radius:999px; padding:6px 10px; font-weight:800}
   .ghost{opacity:.4}
+  /* Mobile portrait overlay optimization */
+  @media (max-width: 768px) and (orientation: portrait) {
+    .overlay {
+      padding: 12px;
+      padding-top: max(12px, var(--safe-top));
+      padding-bottom: max(12px, var(--safe-bottom));
+    }
+    .card {
+      padding: 14px;
+      max-height: 85vh;
+      max-height: calc(100vh - max(24px, var(--safe-top)) - max(24px, var(--safe-bottom)));
+    }
+    .card h2 {
+      font-size: 20px;
+    }
+    .card p {
+      font-size: 14px;
+    }
+    .pill {
+      font-size: 13px;
+      padding: 5px 9px;
+    }
+  }
 </style>
 </head>
 <body>
